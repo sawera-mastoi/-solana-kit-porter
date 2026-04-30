@@ -1,0 +1,42 @@
+version: "1"
+nodes:
+  - id: deterministic-pass
+    name: "Deterministic AST Transforms"
+    type: automatic
+    steps:
+      - name: "Transform Solana API calls"
+        js-ast-grep:
+          js_file: "/Alee Projcets/boring ai hackthon/porter/scripts/codemod.ts"
+          language: "tsx"
+          include:
+            - "**/*.ts"
+            - "**/*.tsx"
+
+  - id: ai-pass
+    name: "AI Assisted Refactoring"
+    type: automatic
+    dependencies: ["deterministic-pass"]
+    steps:
+      - name: "Refactor Transaction Building"
+        ai:
+          prompt: |
+            Refactor legacy @solana/web3.js Transaction logic to the new @solana/kit (v2) functional style.
+            
+            Focus on:
+            1. Replace `new Transaction().add(...)` with `pipe(createTransaction({ version: 'legacy' }), ...)` and `appendTransactionMessageInstruction()`.
+            2. Use `getTransferInstruction` for `SystemProgram.transfer`.
+            3. Convert large numbers to BigInt (e.g. 1000n).
+            4. Update imports to include used helpers like `pipe`, `createTransaction`, `appendTransactionMessageInstruction`, `getTransferInstruction`.
+            
+            Source Code Context:
+            - The deterministic pass has already renamed Connection to createSolanaRpc and PublicKey to address.
+            - Ensure the final code is valid @solana/kit (v2) syntax.
+
+  - id: cleanup
+    name: "Post-migration cleanup"
+    type: automatic
+    dependencies: ["ai-pass"]
+    steps:
+      - name: "Format with Prettier"
+        run: |
+          npx prettier --write "**/*.{ts,tsx,js,jsx}" --log-level warn || true

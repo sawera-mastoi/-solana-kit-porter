@@ -1,0 +1,7 @@
+schema_version: "1.0.0"
+name: "solana-v1-to-kit-codemod"
+version: "1.0.0"
+author: "solana-developer"
+description: "Migrates Solana web3.js v1 code to the new @solana/kit (v2) architecture."
+engine: "workflow"
+workflow: "./workflow.yaml"

@@ -1,0 +1,6 @@
+node_modules/
+real-world-test/
+temp-init/
+.git/
+package-lock.json
+*.exe

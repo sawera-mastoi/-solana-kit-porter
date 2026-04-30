@@ -1,0 +1,13 @@
+id: "replace-new-connection"
+language: "typescript"
+rule:
+  pattern: "new Connection($URL)"
+transform:
+  rewrite: "createSolanaRpc($URL)"
+---
+id: "replace-get-balance"
+language: "typescript"
+rule:
+  pattern: "$CONN.getBalance($ADDR)"
+transform:
+  rewrite: "await $CONN.getBalance($ADDR).send()"

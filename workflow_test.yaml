@@ -1,0 +1,8 @@
+version: "1"
+nodes:
+  - id: test
+    name: "Test Node"
+    type: automatic
+    steps:
+      - name: "Test Step"
+        run: "echo Hello"

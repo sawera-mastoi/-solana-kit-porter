@@ -1,0 +1,6 @@
+id: "rename-web3-to-kit"
+language: "typescript"
+rule:
+  pattern: "import { $$$ITEMS } from '@solana/web3.js'"
+transform:
+  rewrite: "import { $$$ITEMS } from '@solana/kit'"
