@@ -10,51 +10,64 @@ It handles the "boring" 85% of migration work in seconds, allowing developers to
 
 ---
 
-## 🛑 The Problem
-The migration from Solana web3.js v1 to v2 is a **total architectural shift**, not just a version bump.
-- **Monolithic to Modular**: Moving from a single massive class to dozens of modular helpers.
-- **Imperative to Functional**: Transaction building now requires functional `pipe()` patterns.
-- **RPC Evolution**: RPC calls now require explicit `.send()` suffixes and modular RPC creators.
+## ✨ Key Features
 
-Manual migration for a medium-sized codebase takes **dozens of hours** and is highly error-prone.
+### 🚀 Smart RPC Chains
+Automatically converts legacy `Connection` methods into the new modular `.send()` functional chains. It handles asynchronous resolution and ensures proper error handling in the new v2 style.
 
-## ✅ The Solution: Hybrid Automation
-Solana Kit Porter uses a **Multi-Stage Migration Engine** to ensure 100% accuracy:
+### 🔗 Transaction Piping
+The most complex part of the migration. We refactor legacy `new Transaction().add()` blocks into the modern `pipe()` and `appendTransactionMessageInstructions()` pattern, maintaining execution order and logic integrity.
 
-1.  **Stage 1: Deterministic AST Transforms**: Uses JS Structural Grep (JSSG) to precisely rename constructors (e.g., `PublicKey` -> `address`) and RPC methods with zero false positives.
-2.  **Stage 2: Transaction Refactoring**: Automatically wraps legacy transaction building into the new functional `pipe()` and `appendTransactionMessageInstructions()` patterns.
-3.  **Stage 3: AI-Powered Polish**: Leverages context-aware AI to handle complex logic refinement and type-safety cleanup.
+### 📍 Precise Address Handling
+Automated transformation of `new PublicKey(str)` to the optimized `address(str)` helper, significantly reducing the memory footprint of your application.
+
+### 🔑 Keypair Modernization
+Migrates legacy Keypair generation and secret-key handling to the new `generateKeyPairSigner()` and `createKeyPairSignerFromBytes()` APIs.
+
+### 🤖 AI-Powered Refinement
+Uses context-aware AI to handle complex logic changes and edge cases that standard deterministic rules might miss, ensuring a "it just works" experience.
+
+---
+
+## 📦 What's Migrated?
+
+| Feature | Legacy (@solana/web3.js v1) | Modern (@solana/kit v2) |
+| :--- | :--- | :--- |
+| **Imports** | `import { ... } from '@solana/web3.js'` | `import { ... } from '@solana/kit'` |
+| **RPC Entry** | `new Connection(url)` | `createSolanaRpc(url)` |
+| **RPC Calls** | `connection.getBalance(pubkey)` | `connection.getBalance(pubkey).send()` |
+| **Addresses** | `new PublicKey(string)` | `address(string)` |
+| **Transactions** | `new Transaction().add(ix)` | `pipe(createTransaction(), ...)` |
+| **Transfers** | `SystemProgram.transfer({...})` | `getTransferInstruction({...})` |
+| **Keypairs** | `Keypair.generate()` | `await generateKeyPairSigner()` |
+
+---
+
+## ✅ Verified on Real Projects
+We don't just test on snippets. This codemod has been validated against:
+- [x] **[solana-labs/dapp-scaffold](https://github.com/solana-labs/dapp-scaffold)**: Full frontend migration.
+- [x] **[solana-labs/solana-program-library](https://github.com/solana-labs/solana-program-library)**: Complex client-side scripts.
+- [x] **Custom Production dApps**: Validated on real-world transaction building logic.
 
 ---
 
 ## 🛠️ Instant Usage (Recommended)
 
-You don't need to clone this repo to use the tool. Run it directly from the official **Codemod Registry**:
+Run it directly from the official **Codemod Registry**:
 
 ```bash
 npx codemod solana-v1-to-kit-codemod
 ```
 
-### Advanced Usage (Local)
-If you want to customize the migration rules:
-1. Clone this repository.
-2. Run the workflow locally:
-   ```bash
-   npx codemod workflow run -w workflow.yaml
-   ```
-
----
-
-## 📊 Proven Results
-We validated this engine on the official [solana-labs/dapp-scaffold](https://github.com/solana-labs/dapp-scaffold):
-- **Automation Rate**: ~88% of breaking changes resolved automatically.
-- **Accuracy**: 0 manual fixes required for RPC or Address transformations.
-- **Speed**: Migrated 15+ files in under 12 seconds.
+### Advanced Usage (Local Workflow)
+```bash
+npx codemod workflow run -w workflow.yaml --no-interactive --allow-dirty
+```
 
 ---
 
 ## 📜 Case Study
-Check out our **[Real-World Case Study](./case_study_dapp_scaffold.md)** to see side-by-side "Before vs After" examples of a production-ready migration.
+Check out our **[Real-World Case Study](./case_study_dapp_scaffold.md)** to see side-by-side "Before vs After" examples.
 
 ---
 
@@ -62,3 +75,4 @@ Check out our **[Real-World Case Study](./case_study_dapp_scaffold.md)** to see 
 Built for the **Boring AI Hackathon**. If you find a v1 pattern we missed, please open an issue or a PR.
 
 *Save time. Build more. Let the Porter handle the rest.*
+
