@@ -1,0 +1,30 @@
+version: "1"
+nodes:
+  - id: ai-migration
+    name: "AI Migration Pass"
+    type: automatic
+    steps:
+      - name: "Solana v1 to v2 Migration"
+        ai:
+          prompt: |
+            You are an expert Solana developer. Migrating from @solana/web3.js (v1) to @solana/kit (v2).
+            
+            TRANSFORMATION RULES:
+            1. Imports: Replace `@solana/web3.js` with `@solana/kit`. Include helpers: `address`, `createSolanaRpc`, `pipe`, `createTransaction`, `appendTransactionMessageInstructions`, `generateKeyPairSigner`, `getTransferInstruction`.
+            2. Connection: `new Connection(url)` -> `createSolanaRpc(url)`.
+            3. RPC Calls: `connection.getBalance(pubkey)` -> `connection.getBalance(pubkey).send()`. Do this for all RPC methods.
+            4. PublicKey: `new PublicKey(str)` -> `address(str)`.
+            5. Keypairs: `Keypair.generate()` -> `await generateKeyPairSigner()`.
+            6. Transactions: `new Transaction().add(ix)` -> `pipe(createTransaction({ version: 'legacy' }), (tx) => appendTransactionMessageInstructions([ix], tx))`.
+            7. Transfers: `SystemProgram.transfer({...})` -> `getTransferInstruction({...})`.
+            8. BigInt: Ensure all lamports/amounts are BigInt (e.g., 1000n).
+            
+            Ensure the final code is high-quality, idiomatic @solana/kit (v2) code.
+
+  - id: cleanup
+    name: "Cleanup"
+    type: automatic
+    dependencies: ["ai-migration"]
+    steps:
+      - name: "Prettier"
+        run: "npx prettier --write \"**/*.{ts,tsx}\" --log-level warn || true"

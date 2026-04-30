@@ -1,0 +1,13 @@
+id: "replace-new-publickey"
+language: "typescript"
+rule:
+  pattern: "new PublicKey($ADDR)"
+transform:
+  rewrite: "address($ADDR)"
+---
+id: "replace-publickey-type"
+language: "typescript"
+rule:
+  pattern: "PublicKey"
+transform:
+  rewrite: "Address"

@@ -1,0 +1,18 @@
+id: solana-v2-migration
+language: TypeScript
+rule:
+  any:
+    - pattern: "new PublicKey($ADDR)"
+    - pattern: "PublicKey"
+    - pattern: "new Connection($URL)"
+    - pattern: "Keypair.generate()"
+    - pattern: "Keypair.fromSecretKey($ARGS)"
+    - pattern: "SystemProgram.transfer({ fromPubkey: $F, toPubkey: $T, lamports: $L })"
+    - pattern: "new Transaction().add($IX)"
+    - pattern: "$CONN.$METHOD($ARGS)"
+      where:
+        METHOD:
+          regex: "^(getBalance|getMinimumBalanceForRentExemption|getLatestBlockhash)$"
+
+# Note: Single rule transformations are harder in one file. 
+# Better to use multiple files or JS.
