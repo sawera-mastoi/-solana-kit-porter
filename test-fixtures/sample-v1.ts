@@ -20,10 +20,10 @@ async function run() {
   const tx = pipe(createTransaction({ version: "legacy" }), (tx) =>
     appendTransactionMessageInstructions(
       [
-        SystemProgram.transfer({
-          fromPubkey, // Should be renamed to source
-          toPubkey, // Should be renamed to destination
-          lamports: 1000, // Should be renamed to amount
+        getTransferInstruction({
+          source, // Should be renamed to source
+          destination, // Should be renamed to destination
+          amount: 1000, // Should be renamed to amount
         }),
       ],
       tx,

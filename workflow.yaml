@@ -6,7 +6,7 @@ nodes:
     steps:
       - name: "Transform Solana API calls"
         js-ast-grep:
-          js_file: "/Alee Projcets/boring ai hackthon/porter/scripts/codemod.ts"
+          js_file: "D:/Alee Projcets/boring ai hackthon/porter/scripts/codemod.ts"
           language: "tsx"
           include:
             - "**/*.ts"

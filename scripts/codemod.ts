@@ -141,7 +141,18 @@ const codemod: Codemod<TSX> = async (root) => {
     },
   });
   for (const node of rpcCalls) {
-    if (node.parent()?.kind() !== "await_expression")
+    const parent = node.parent();
+    const parentText = parent?.text() || "";
+
+    // Check if the parent is already a member expression calling .send()
+    if (
+      parent?.kind() === "member_expression" &&
+      parentText.includes(".send")
+    ) {
+      continue;
+    }
+
+    if (parent?.kind() !== "await_expression")
       edits.push(node.replace(`await ${node.text()}.send()`));
     else edits.push(node.replace(`${node.text()}.send()`));
   }
